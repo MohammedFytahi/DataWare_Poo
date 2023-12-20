@@ -1,5 +1,5 @@
 <?php
-class Personne
+class Users
 {
     protected $nom;
     protected $prenom;
@@ -103,7 +103,7 @@ class Personne
         $_SESSION['autoriser'] = "oui";
 
         if ($userData["role"] == "user") {
-            header("Location: interface.php");
+            header("Location: project.php");
         } elseif ($userData["role"] == "scrum_master") {
             header("Location: home.php");
         } else {

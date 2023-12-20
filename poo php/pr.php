@@ -21,7 +21,7 @@ class Project {
     public function getdescription(){
         return $this->description;
     }
-
+    
     public function getDateDebut(){
         return $this->dateDebut;
     }

@@ -1,5 +1,5 @@
 <?php
-include "Users.php"; // Make sure to include the Users class file
+include "users.php"; // Make sure to include the Users class file
 
 $database = new PDO("mysql:host=localhost;dbname=dataware", "root", "");
 
