@@ -19,15 +19,17 @@ $owner = new Owner($nom, $prenom, $email, $tel, $role, $equipe, $statut, $conn);
 // Utilisez la méthode pour obtenir tous les projets
 $projects = $owner->getAllProjects();
 
-// Ajoutez la logique de suppression ici si nécessaire
-if (isset($_GET['id'])) {
-    $projetId = $_GET['id'];
-    $owner->deleteProject($projetId);
-    // Redirigez ou effectuez d'autres actions après la suppression si nécessaire
-    header("Location: project.php");
-    exit();
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["delete_id"])) {
+  $projetId = $_POST["delete_id"];
+  if ($owner->deleteProject($projetId)) {
+      // Redirect after successful deletion
+      header("Location: project.php");
+      exit();
+  } else {
+      // Handle deletion failure, if needed
+      echo "Error deleting project.";
+  }
 }
-
 // Fetch all projects using PDO
 $sql = "SELECT * FROM projets";
 $statement = $conn->query($sql);

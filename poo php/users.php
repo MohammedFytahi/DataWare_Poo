@@ -1,4 +1,5 @@
 <?php
+
 class Users
 {
     protected $nom;
@@ -12,14 +13,14 @@ class Users
     protected $connection;
 
 
-    public function __construct($nom, $prenom, $email, $tel, $role, $equipe, $statut, $connection)
+   
+    public function __construct($nom = null, $prenom = null, $email = null, $tel = null, $role = null, $equipe = null, $statut = null, $connection = null)
     {
         $this->nom = $nom;
         $this->prenom = $prenom;
         $this->email = $email;
         $this->tel = $tel;
         $this->role = $role;
-        $this->password=$password;
         $this->equipe = $equipe;
         $this->statut = $statut;
         $this->connection = $connection;
