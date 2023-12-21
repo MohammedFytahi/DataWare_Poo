@@ -60,6 +60,10 @@ class Users
     {
         return $this->statut;
     }
+    
+    public function getConnection() {
+        return $this->connection;
+    }
 
     public static function registerUser($nom, $prenom, $email, $password)
     {
@@ -104,9 +108,9 @@ class Users
         $_SESSION['autoriser'] = "oui";
 
         if ($userData["role"] == "user") {
-            header("Location: project.php");
+            header("Location: mes-equpes.php");
         } elseif ($userData["role"] == "scrum_master") {
-            header("Location: home.php");
+            header("Location: equipe.php");
         } else {
             header("Location: project.php");
         }

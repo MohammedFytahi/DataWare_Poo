@@ -39,7 +39,7 @@ class Owner extends Users {
             $statement->execute();
             return true;
         } catch (PDOException $e) {
-            // Log or echo the error message
+
             echo "Error deleting project: " . $e->getMessage();
             return false;
         }

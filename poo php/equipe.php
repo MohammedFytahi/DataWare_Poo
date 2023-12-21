@@ -1,16 +1,21 @@
 <?php
-include "connexion.php";
-include "Team.php"; // Inclure la classe Team
+include "Scrum.php";
 
-$query = "SELECT equipe.*, GROUP_CONCAT(projets.nom_projet) as projects
-          FROM equipe
-          LEFT JOIN projets ON equipe.id_equipe = projets.equipe_id
-          GROUP BY equipe.id_equipe";
+// Assurez-vous que les clés existent dans la session
+$nom = isset($_SESSION['nom']) ? $_SESSION['nom'] : '';
+$prenom = isset($_SESSION['prenom']) ? $_SESSION['prenom'] : '';
+$email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
+$tel = isset($_SESSION['tel']) ? $_SESSION['tel'] : '';
+$role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
+$equipe = isset($_SESSION['equipe']) ? $_SESSION['equipe'] : '';
+$statut = isset($_SESSION['statut']) ? $_SESSION['statut'] : '';
 
-$result = $conn->query($query);
+// Créez une instance de la classe Scrum en passant les paramètres nécessaires
+$scrum = new Scrum($nom, $prenom, $email, $tel, $equipe, $statut, $conn);
 
+// Utilisez la méthode pour obtenir toutes les équipes
+$teams = $scrum->getAllTeams();
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -100,37 +105,41 @@ $result = $conn->query($query);
         <a href="add-new.php" class="bg-gray-800 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:shadow-outline-gray active:bg-gray-800">Créer une équipe</a>
         <a href="ajout.php" class="bg-gray-800 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:shadow-outline-gray active:bg-gray-800">Ajouter un membre</a>
         <a href="sequipe.php" class="bg-gray-800 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:shadow-outline-gray active:bg-gray-800">Supprimer membre</a>
-        <a href="affecte.php" class="bg-gray-800 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:shadow-outline-gray active:bg-gray-800">affectuer projet</a>
+        <a href="affecte.php" class="bg-gray-800 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:shadow-outline-gray active:bg-gray-800">Affectuer projet</a>
     </div>
-    <div class="overflow-x-auto">
-        <table class="min-w-full bg-white border border-gray-300">
-            <thead class="bg-gray-800 text-white">
-                <tr>
-                    <th class="py-2 px-4">Nom de l'Équipe</th>
-                    <th class="py-2 px-4">Description</th>
-                    <th class="py-2 px-4">Date de création</th>
-                    <th class="py-2 px-4">Projets</th>
-                    <th class="py-2 px-4" colspan="2">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) : ?>
+    
+ 
+       
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-300">
+                <thead class="bg-gray-800 text-white">
                     <tr>
-                        <td class="py-2 px-4"><?php echo $row['nom_equipe']; ?></td>
-                        <td class="py-2 px-4"><?php echo $row['description_equipe']; ?></td>
-                        <td class="py-2 px-4"><?php echo $row['date_creation_equipe']; ?></td>
-                        <td class="py-2 px-4"><?php echo $row['projects']; ?></td>
-                        <td class="py-2 px-4">
-                            <a href="mequipe.php?id=<?php echo $row['id_equipe']; ?>" class="text-blue-500 hover:text-blue-800">Modifier</a>
-                        </td>
-                        <td class="py-2 px-4">
-                            <a href="delete.php?id=<?php echo $row['id_equipe']; ?>" class="text-red-500 hover:text-red-800" onclick="return confirm('Are you sure you want to delete this team?')">Supprimer</a>
-                        </td>
+                        <th class="py-2 px-4">Team Name</th>
+                        <th class="py-2 px-4">Description</th>
+                        <th class="py-2 px-4">Creation Date</th>
+                        <th class="py-2 px-4" colspan="2">Actions</th>
                     </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php foreach ($teams as $team) : ?>
+                        <tr>
+                            <td class="py-2 px-4"><?php echo $team->getName(); ?></td>
+                            <td class="py-2 px-4"><?php echo $team->getDescription(); ?></td>
+                            <td class="py-2 px-4"><?php echo $team->getCreationDate(); ?></td>
+                            <!-- You may need to modify this part based on your actual structure -->
+                            <td class="py-2 px-4">
+                                <a href="edit-team.php?id=<?php echo $team->getId(); ?>" class="text-blue-500 hover:text-blue-800">Edit</a>
+                            </td>
+                            <td class="py-2 px-4">
+                                <a href="delete-team.php?id=<?php echo $team->getId(); ?>" class="text-red-500 hover:text-red-800" onclick="return confirm('Are you sure you want to delete this team?')">Delete</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
+
 </div>
 
 </body>

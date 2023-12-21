@@ -1,29 +1,33 @@
 <?php
-class Team{
-    private $id;
+
+class Team {
     private $name;
     private $description;
-    private $creationdate;
-    public function __construct($id, $name, $description, $creationdate){
-        $this->id=$id;
-        $this->name=$name;
-        $this->description=$description;
-        $this->creationdate=$creationdate;
-        
-    }
-    public function getId(){
-        return $this->id;
+    private $creationDate;
 
+    public function __construct($name, $description, $creationDate, $id) {
+        $this->name = $name;
+        $this->description = $description;
+        $this->creationDate = $creationDate;
+        $this->id = $id;
     }
-    public function getName(){
+
+    // Add getters if needed
+    public function getName() {
         return $this->name;
     }
-    public function getDescription(){
+
+    public function getDescription() {
         return $this->description;
     }
-    public function getCreationdate(){
-        return $this->creationdate;
+
+    public function getCreationDate() {
+        return $this->creationDate;
     }
-    
-    
+
+    public function getId() {
+        return $this->id;
+    }
 }
+
+?>
