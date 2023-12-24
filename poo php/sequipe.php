@@ -1,9 +1,9 @@
 <?php
 include "Scrum.php";
+include_once "connexion.php";
 
 $database = new PDO("mysql:host=localhost;dbname=dataware", "root", "");
-
-$scrumMaster = new Scrum(null, null, null, null, null, null);
+$scrumMaster = new Scrum(null, null, null, null, null, null, $database);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_equipe = $_POST["id_equipe"];
@@ -14,8 +14,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo $message;
 }
 
-$resultEquipe = $scrumMaster->getTeams();
-$resultUserInEquipe = $scrumMaster->getUsersInTeam();
+$resultEquipe = $scrumMaster->getAllTeams();
+
+// Vérifier si $id_equipe est défini, sinon définir une valeur par défaut
+if (!isset($id_equipe)) {
+    // Exemple : définir $id_equipe sur la première équipe si non défini
+    $firstTeam = reset($resultEquipe);
+    $id_equipe = $firstTeam ? $firstTeam->getIdEquipe() : null;
+}
+
+$resultUserInEquipe = $scrumMaster->getUserTeam($id_equipe);
 ?>
 
 <!DOCTYPE html>
@@ -35,18 +43,18 @@ $resultUserInEquipe = $scrumMaster->getUsersInTeam();
             <div class="mb-4">
                 <label for="id_equipe" class="block text-gray-700 text-sm font-bold mb-2">Sélectionner Équipe:</label>
                 <select id="id_equipe" name="id_equipe" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    <?php while ($rowEquipe = $resultEquipe->fetch(PDO::FETCH_ASSOC)) : ?>
-                        <option value="<?php echo $rowEquipe['id_equipe']; ?>"><?php echo $rowEquipe['nom_equipe']; ?></option>
-                    <?php endwhile; ?>
+                    <?php foreach ($resultEquipe as $team) : ?>
+                        <option value="<?php echo $team->getIdEquipe(); ?>"><?php echo $team->getNomEquipe(); ?></option>
+                    <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="mb-4">
                 <label for="id_user" class="block text-gray-700 text-sm font-bold mb-2">Sélectionner Membre à Retirer:</label>
                 <select id="id_user" name="id_user" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    <?php while ($rowUserInEquipe = $resultUserInEquipe->fetch(PDO::FETCH_ASSOC)) : ?>
-                        <option value="<?php echo $rowUserInEquipe['id_user']; ?>"><?php echo $rowUserInEquipe['nom'] . ' ' . $rowUserInEquipe['prenom']; ?></option>
-                    <?php endwhile; ?>
+                    <?php foreach ($resultUserInEquipe as $user) : ?>
+                        <option value="<?php echo $user->getIdUser(); ?>"><?php echo $user->getNom() . ' ' . $user->getPrenom(); ?></option>
+                    <?php endforeach; ?>
                 </select>
             </div>
 
