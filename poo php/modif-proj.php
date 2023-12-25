@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include 'connexion.php';
+
 include 'Owner.php';
 
 if (isset($_GET['id'])) {

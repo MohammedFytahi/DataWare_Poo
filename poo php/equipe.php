@@ -1,5 +1,5 @@
 <?php
-include "Scrum.php";
+include_once "Scrum.php";
 
 
 $nom = isset($_SESSION['nom']) ? $_SESSION['nom'] : '';

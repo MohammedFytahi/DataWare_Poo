@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include 'connexion.php';
+
 include 'Owner.php';
 
 // Assurez-vous que les clés existent dans la session

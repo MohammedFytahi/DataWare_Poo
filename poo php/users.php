@@ -1,4 +1,8 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+include("connexion.php");
 
 class Users
 {
@@ -12,6 +16,11 @@ class Users
     protected $statut;
     protected $connection;
 
+    protected $erreur_nom;
+    protected $erreur_prenom;
+    protected $erreur_email;
+    protected $erreur_mot_de_passe;
+
 
    
     public function __construct($nom = null, $prenom = null, $email = null, $tel = null, $role = null, $equipe = null, $statut = null, $connection = null)
@@ -24,6 +33,11 @@ class Users
         $this->equipe = $equipe;
         $this->statut = $statut;
         $this->connection = $connection;
+        $this->erreur_nom = null;
+        $this->erreur_prenom = null;
+        $this->erreur_email = null;
+        $this->erreur_mot_de_passe = null;
+       
     }
 
     public function getNom()
@@ -64,11 +78,49 @@ class Users
     public function getConnection() {
         return $this->connection;
     }
+    private function validate($nom, $prenom, $email, $mot_de_passe)
+    {
+        $patterns = [
+            'nom' => '/^[a-zA-ZÀ-ÖØ-öø-ÿ\s]{3,}$/u',
+            'prenom' => '/^[a-zA-ZÀ-ÖØ-öø-ÿ\s]{3,}$/u',
+            'email' => '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+            'mot_de_passe' => '/^.{8,}$/',
+        ];
+
+        foreach ($patterns as $field => $pattern) {
+            if (!preg_match($pattern, ${$field})) {
+                $errorKey = "erreur_" . $field;
+                $this->$errorKey = "Veuillez entrer un $field valide.";
+                echo "Erreur $field: " . $this->$errorKey . "<br>";
+            }
+        }
+    }
 
     public static function registerUser($nom, $prenom, $email, $password)
     {
         $db = new PDO("mysql:host=localhost;dbname=dataware", "root", "");
 
+        // Validate user input
+        $user = new self($nom, $prenom, $email);
+        echo "Nom: " . $user->getNom() . "<br>";
+        echo "Prénom: " . $user->getPrenom() . "<br>";
+        echo "Email: " . $user->getEmail() . "<br>";
+        $user->validate($nom, $prenom, $email, $password);
+
+        // Check for validation errors
+        if ($user->erreur_nom || $user->erreur_prenom || $user->erreur_email || $user->erreur_mot_de_passe) {
+            // Handle validation errors as needed
+            // For example, you can return an array of errors or throw an exception
+            $errors = [
+                'erreur_nom' => $user->erreur_nom,
+                'erreur_prenom' => $user->erreur_prenom,
+                'erreur_email' => $user->erreur_email,
+                'erreur_mot_de_passe' => $user->erreur_mot_de_passe,
+            ];
+            return $errors;
+        }
+
+        // Proceed with user registration
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         $stmt = $db->prepare("INSERT INTO users (nom, prenom, email, password) VALUES (?, ?, ?, ?)");
@@ -80,8 +132,9 @@ class Users
 
         $stmt->execute();
 
-        echo "User registered successfully!";
+        return "User registered successfully!";
     }
+
 
     public function authenticateUser($password)
     {
@@ -108,7 +161,7 @@ class Users
         $_SESSION['autoriser'] = "oui";
 
         if ($userData["role"] == "user") {
-            header("Location: mes-equpes.php");
+            header("Location: mes-equipes.php");
         } elseif ($userData["role"] == "scrum_master") {
             header("Location: equipe.php");
         } else {

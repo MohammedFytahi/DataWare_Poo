@@ -1,11 +1,10 @@
 <?php
 include 'connexion.php';
-include 'Pr.php';
+include 'pr.php';
 
 $sql = "SELECT * FROM projets";
 $stmt = $conn->query($sql);
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 
 <!DOCTYPE html>
@@ -36,8 +35,8 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <tbody>
                     <?php foreach ($result as $row) : ?>
                         <?php
-                        
                         $project = new Project(
+                            $row['id_projet'],
                             $row['nom_projet'],
                             $row['description'],
                             $row['date_debut'],
@@ -60,3 +59,4 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </body>
 
 </html>
+?>

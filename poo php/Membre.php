@@ -1,6 +1,6 @@
 <?php
 
-include "connexion.php";
+
 include "users.php";
 
 class Membre extends Users

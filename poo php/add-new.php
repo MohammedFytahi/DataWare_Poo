@@ -1,6 +1,6 @@
 <?php
 include "Scrum.php";
-include_once "connexion.php";
+
 
 $database = new Database();
 $conn = $database->getConnection();

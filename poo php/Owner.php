@@ -1,6 +1,6 @@
 <?php
-include "users.php";
-include "pr.php";
+include_once 'users.php';
+include_once 'pr.php';
 
 class Owner extends Users {
 
@@ -18,10 +18,11 @@ class Owner extends Users {
         
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $project = new Project(
-                $row['nom_projet'],
+                $row['id_projet'],
+                $row['nom_projet'], // Mettez à jour cette ligne
                 $row['description'],
-                $row['date_debut'],
-                $row['date_fin'],
+                $row['date_debut'], // Mettez à jour cette ligne
+                $row['date_fin'],   // Mettez à jour cette ligne
                 $row['statut']
             );
             
@@ -30,6 +31,7 @@ class Owner extends Users {
         
         return $projects;
     }
+    
     public function deleteProject($projectId) {
         $sql = "DELETE FROM projets WHERE id_projet = :id_projet";
         $statement = $this->connection->prepare($sql);

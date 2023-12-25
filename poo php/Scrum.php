@@ -1,5 +1,5 @@
 <?php
-include "connexion.php";
+
 include "users.php";
 include "Team.php";
 include "pr.php";

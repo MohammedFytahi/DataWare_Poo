@@ -16,10 +16,11 @@ class Project {
         $this->statut = $statut;
     }
 
-    // Add getters for the other properties
+    // Getters for other properties
     public function getIdProjet(){
         return $this->id_projet;
     }
+
     public function getNomProjet(){
         return $this->nomProjet;
     }
@@ -27,7 +28,7 @@ class Project {
     public function getDescription(){
         return $this->description;
     }
-    
+
     public function getDateDebut(){
         return $this->dateDebut;
     }
@@ -40,3 +41,4 @@ class Project {
         return $this->statut;
     }
 }
+?>

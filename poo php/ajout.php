@@ -1,6 +1,6 @@
 <?php
 include "Scrum.php";
-include_once "connexion.php";
+
 
 $database = new PDO("mysql:host=localhost;dbname=dataware", "root", "");
 $scrumMaster = new Scrum(null, null, null, null, null, null, $database);
