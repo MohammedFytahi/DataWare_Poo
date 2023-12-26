@@ -7,10 +7,10 @@ include 'Owner.php';
 if (isset($_GET['id'])) {
     $projectId = $_GET['id'];
 
-    // Create an instance of the Owner class
+   
     $owner = new Owner('', '', '', '', '', '', '', $conn);
 
-    // Get project data
+   
     $projetData = $owner->getProjectData($projectId);
 } else {
     echo "Project ID not provided.";

@@ -250,5 +250,39 @@ class Scrum extends Users {
             return "Error: " . $e->getMessage();
         }
     }
+    public function getUsersByTeam() {
+        $sql = "SELECT * FROM users WHERE nom_equipe = :equipe";
+        $stmt = $this->db->prepare($sql);
+    
+        // Store the result of $this->getEquipe() in a variable
+        $equipeValue = $this->getEquipe();
+    
+        // Pass the variable to bindParam
+        $stmt->bindParam(':equipe', $equipeValue);
+        $stmt->execute();
+        $users = [];
+    
+        // Debug statements
+        echo "SQL Query: $sql\n";
+        echo "Rows Fetched: " . $stmt->rowCount() . "\n";
+    
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $user = new Users(
+                $row['nom'],
+                $row['prenom'],
+                $row['email'],
+                $row['tel'],
+                $row['role'],
+                $row['equipe'],
+                $row['statut'],
+                $this->db
+            );
+            $users[] = $user;
+        }
+    
+        return $users;
+    }
+    
 }
+    
 ?>

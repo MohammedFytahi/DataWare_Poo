@@ -1,6 +1,7 @@
 <?php
 include_once 'users.php';
 include_once 'pr.php';
+include_once 'Team.php';
 
 class Owner extends Users {
 
@@ -115,7 +116,51 @@ class Owner extends Users {
 
         $statement->closeCursor();
     }
+
+    public function getAllTeams() {
+        $sql = "SELECT * FROM equipe";
+        $statement = $this->connection->query($sql);
+        $teams = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $team = new Team(
+                $row['nom_equipe'],
+                $row['description_equipe'],
+                $row['date_creation_equipe'],
+                $row['id_equipe']
+            );
+            $teams[] = $team;
+        }
+
+        return $teams;
+    }
     
+    public function updateUser($userId, $updatedName, $updatedEmail, $updatedRole) {
+        // Vérifier les doublons d'email
+        $duplicateCheck = $this->connection->prepare("SELECT id_user FROM users WHERE email = :email AND id_user != :userId");
+        $duplicateCheck->bindParam(':email', $updatedEmail, PDO::PARAM_STR);
+        $duplicateCheck->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $duplicateCheck->execute();
+
+        if ($duplicateCheck->rowCount() > 0) {
+            echo "Erreur lors de la mise à jour de l'utilisateur : Email en double.";
+            exit();
+        }
+
+        // Continuer avec la mise à jour
+        $updateQuery = "UPDATE users SET nom = :nom, email = :email, role = :role WHERE id_user = :userId";
+        $updateStatement = $this->connection->prepare($updateQuery);
+        $updateStatement->bindParam(':nom', $updatedName, PDO::PARAM_STR);
+        $updateStatement->bindParam(':email', $updatedEmail, PDO::PARAM_STR);
+        $updateStatement->bindParam(':role', $updatedRole, PDO::PARAM_STR);
+        $updateStatement->bindParam(':userId', $userId, PDO::PARAM_INT);
+
+        if ($updateStatement->execute()) {
+            header("Location: interface.php");
+        } else {
+            echo "Erreur lors de la mise à jour de l'utilisateur : " . $updateStatement->errorInfo()[2];
+        }
+    }
 
 
 }
